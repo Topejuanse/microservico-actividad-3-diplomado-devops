@@ -1,0 +1,11 @@
+image:
+  repository: servicio-usuarios
+  tag: "1.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+  targertPort: 8000
+
+replicaCount: 2
