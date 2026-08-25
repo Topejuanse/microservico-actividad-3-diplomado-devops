@@ -38,5 +38,20 @@ pipeline {
                 }
             }
         }
+
+        stage('4. Push Changes to GitHub') {
+            steps {
+                script{
+                    echo "Guardando y subiendo los cambios de los values.yaml..."
+                    sh '''
+                        git config user.email "jenkins@bot.local"
+                        git config user.name "Jenkins Pipeline"
+                        git add helm-charts/
+                        git diff-index --quiet HEAD || git commit -m "Tarea: Actualizar image tag to ${IMAGE_TAG} [skip ci]"
+                        git push origin main
+                    '''
+                }
+            }
+        }
     }
 }
