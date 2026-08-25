@@ -48,7 +48,7 @@ pipeline {
                         git config user.name "Jenkins Pipeline"
                         git add helm-charts/
                         git diff-index --quiet HEAD || git commit -m "Tarea: Actualizar image tag to ${IMAGE_TAG} [skip ci]"
-                        git push origin main
+                        git push origin HEAD:main
                     '''
                 }
             }
