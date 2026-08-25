@@ -16,7 +16,7 @@ pipeline {
             }
         }
 
-        stage2('2. Build Docker Images') {
+        stage('2. Build Docker Images') {
             steps {
                 script {
 
@@ -29,7 +29,7 @@ pipeline {
             }
         }
 
-        stage3('3. Update Helm Chart Values') {
+        stage('3. Update Helm Chart Values') {
             steps {
                 script {
                     echo "Actualizado tags de imagen en Helm values..."
