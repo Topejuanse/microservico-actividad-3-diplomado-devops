@@ -1,6 +1,6 @@
 image:
   repository: servicio-pedidos
-  tag: "1.0"
+  tag: "1.0.8"
   pullPolicy: IfNotPresent
 
 service:
