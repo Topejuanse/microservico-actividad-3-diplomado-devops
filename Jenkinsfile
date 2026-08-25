@@ -43,13 +43,15 @@ pipeline {
             steps {
                 script{
                     echo "Guardando y subiendo los cambios de los values.yaml..."
-                    sh '''
-                        git config user.email "jenkins@bot.local"
-                        git config user.name "Jenkins Pipeline"
-                        git add helm-charts/
-                        git diff-index --quiet HEAD || git commit -m "Tarea: Actualizar image tag to ${IMAGE_TAG} [skip ci]"
-                        git push origin HEAD:main
-                    '''
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        sh '''
+                            git config user.email "jenkins@bot.local"
+                            git config user.name "Jenkins Pipeline"
+                            git add helm-charts/
+                            git diff-index --quiet HEAD || git commit -m "Tarea: Actualizar image tag a ${IMAGE_TAG} [skip ci]"
+                            git push https://${GIT_USER}:${GIT_PASS}@github.com/Topejuanse/microservico-actividad-3-diplomado-devops.git HEAD:main
+                        '''
+                    }
                 }
             }
         }
