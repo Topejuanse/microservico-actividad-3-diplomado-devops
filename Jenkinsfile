@@ -22,7 +22,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                         
                         echo "Iniciando sesión en Docker Hub..."
-                        sh 'echo "$DOCKER_PASS | docker login -u "$DOCKER_USER" --password-stdin'
+                        sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
 
                         echo "Construyendo y subiendo imagen para servicio-usuarios..."
                         sh """
@@ -32,8 +32,8 @@ pipeline {
 
                         echo "Construyendo y subiendo imagen para servicio-pedidos..."
                         sh """
-                            docker build -t ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG} ./servicio-pedidos
-                            docker push ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG}
+                        docker build -t ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG} ./servicio-pedidos
+                        docker push ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG}
                         """
 
                     }
