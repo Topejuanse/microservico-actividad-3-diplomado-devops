@@ -31,7 +31,7 @@ pipeline {
                         """
 
                         echo "Construyendo y subiendo imagen para servicio-pedidos..."
-                            sh """
+                        sh """
                             docker build -t ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG} ./servicio-pedidos
                             docker push ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG}
                         """
