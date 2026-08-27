@@ -6,11 +6,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: pedidos-api
+      {{- include "servicio-pedidos-chart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: pedidos-api
+        {{- include "servicio-pedidos-chart.selectorLabels" . | nindent 10 }}
     spec:
       containers:
         - name: pedidos-api

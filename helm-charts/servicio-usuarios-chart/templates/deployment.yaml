@@ -6,11 +6,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: usuarios-api
+      {{- include "servicio-usuarios-chart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: usuarios-api
+        {{- include "servicio-usuarios-chart.selectorLabels" . | nindent 10 }}
     spec:
       containers:
         - name: usuarios-api
