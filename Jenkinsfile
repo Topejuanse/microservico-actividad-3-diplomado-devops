@@ -16,15 +16,27 @@ pipeline {
             }
         }
 
-        stage('2. Build Docker Images') {
+        stage('2. Build and push Docker Images') {
             steps {
                 script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        
+                        echo "Iniciando sesión en Docker Hub..."
+                        sh 'echo "$DOCKER_PASS | docker login -u "$DOCKER_USER" --password-stdin'
 
-                    echo "Construyendo imagen para servicio-usuarios..."
-                    sh "docker build -t servicio-usuarios:${IMAGE_TAG} ./servicio-usuarios"
+                        echo "Construyendo y subiendo imagen para servicio-usuarios..."
+                        sh """
+                            docker build -t ${DOCKER_USER}/servicio-usuarios:${IMAGE_TAG} ./servicio-usuarios
+                            docker push ${DOCKER_USER}/servicio-usuarios:${IMAGE_TAG}
+                        """
 
-                    echo "Construyendo imagen para servicio-pedidos..."
-                        sh "docker build -t servicio-pedidos:${IMAGE_TAG} ./servicio-pedidos"
+                        echo "Construyendo y subiendo imagen para servicio-pedidos..."
+                            sh """
+                            docker build -t ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG} ./servicio-pedidos
+                            docker push ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG}
+                        """
+
+                    }
                 }
             }
         }

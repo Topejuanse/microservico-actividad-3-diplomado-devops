@@ -1,5 +1,5 @@
 image:
-  repository: servicio-usuarios
+  repository: diplomado-devops-equipo/servicio-usuarios
   tag: "1.0"
   pullPolicy: IfNotPresent
 
