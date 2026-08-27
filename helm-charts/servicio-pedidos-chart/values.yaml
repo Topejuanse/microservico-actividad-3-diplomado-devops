@@ -1,5 +1,5 @@
 image:
-  repository: diplomado-devops-equipo/servicio-pedidos
+  repository: equipodiplomadodevops/servicio-pedidos
   tag: "1.0"
   pullPolicy: IfNotPresent
 
