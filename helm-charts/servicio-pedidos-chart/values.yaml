@@ -6,6 +6,6 @@ image:
 service:
   type: ClusterIP
   port: 8001
-  targertPort: 8000
+  targertPort: 8001
 
 replicaCount: 2
