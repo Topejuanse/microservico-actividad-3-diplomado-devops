@@ -22,18 +22,20 @@ pipeline {
                         echo "Iniciando sesión en Docker Hub..."
                         sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
 
-                        echo "Preparando buildx (QEMU + builder multi-arch)..."
+                        echo "Preparando buildx (QEMU + builder multi-arch sobre el daemon dind)..."
                         sh '''
                             docker run --privileged --rm tonistiigi/binfmt --install all
-                            docker buildx create --name multiarch --driver docker-container --use || docker buildx use multiarch
+                            docker context inspect dindctx >/dev/null 2>&1 || docker context create dindctx --docker "host=tcp://docker:2376,ca=/certs/client/ca.pem,cert=/certs/client/cert.pem,key=/certs/client/key.pem"
+                            docker buildx rm multiarch >/dev/null 2>&1 || true
+                            docker buildx create --name multiarch --driver docker-container --use dindctx
                             docker buildx inspect --bootstrap
                         '''
 
                         echo "Construyendo y subiendo servicio-usuarios (linux/amd64 + linux/arm64)..."
-                        sh "docker buildx build --platform linux/amd64,linux/arm64 -t ${DOCKER_USER}/servicio-usuarios:${IMAGE_TAG} --push ./servicio-usuarios"
+                        sh "docker buildx build --builder multiarch --platform linux/amd64,linux/arm64 -t ${DOCKER_USER}/servicio-usuarios:${IMAGE_TAG} --push ./servicio-usuarios"
 
                         echo "Construyendo y subiendo servicio-pedidos (linux/amd64 + linux/arm64)..."
-                        sh "docker buildx build --platform linux/amd64,linux/arm64 -t ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG} --push ./servicio-pedidos"
+                        sh "docker buildx build --builder multiarch --platform linux/amd64,linux/arm64 -t ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG} --push ./servicio-pedidos"
 
                     }
                 }
