@@ -42,6 +42,9 @@ jobs:
   - script: >
       pipelineJob('microservicios-pipeline') {
         description('Build + push de imagenes, bump de Helm values y push a GitHub (ver Jenkinsfile del repo).')
+        triggers {
+          scm('H/3 * * * *')
+        }
         definition {
           cpsScm {
             scm {
@@ -50,6 +53,12 @@ jobs:
                   url("${GIT_REPO_URL:-https://github.com/Topejuanse/microservico-actividad-3-diplomado-devops.git}")
                 }
                 branches("${GIT_BRANCH:-main}")
+                extensions {
+                  pathRestriction {
+                    includedRegions('')
+                    excludedRegions('helm-charts/.*')
+                  }
+                }
               }
             }
             scriptPath('Jenkinsfile')
