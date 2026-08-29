@@ -1,6 +1,6 @@
 image:
   repository: jfuquene/servicio-usuarios
-  tag: "1.0.10-426f683"
+  tag: "1.0.11-6be28b3"
   pullPolicy: IfNotPresent
 
 service:
