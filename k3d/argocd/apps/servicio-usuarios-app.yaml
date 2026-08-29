@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: servicio-usuarios
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Topejuanse/microservico-actividad-3-diplomado-devops.git
+    targetRevision: main
+    path: helm-charts/servicio-usuarios-chart
+    helm:
+      # Fija el nombre del release para que el Service quede como
+      # "servicio-usuarios-chart" (ver templates/_helpers.tpl).
+      releaseName: servicio-usuarios-chart
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: microservicios
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,20 @@
+# Valores minimos de Argo CD para un entorno local en k3d.
+# Chart: argo/argo-cd  ->  https://github.com/argoproj/argo-helm
+
+configs:
+  params:
+    # Sirve la UI/API por HTTP plano (sin TLS propio) para exponerla
+    # detras del Ingress de Traefik sin doble terminacion TLS.
+    server.insecure: true
+
+# Se recorta el footprint para una maquina de desarrollo.
+dex:
+  enabled: false
+notifications:
+  enabled: false
+applicationSet:
+  enabled: false
+
+server:
+  service:
+    type: ClusterIP

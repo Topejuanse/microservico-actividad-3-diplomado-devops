@@ -1,0 +1,27 @@
+# Configuration as Code + creacion de jobs declarativa
+configuration-as-code
+job-dsl
+
+# Pipeline (suite completa)
+workflow-aggregator
+pipeline-stage-view
+
+# SCM
+git
+github
+github-branch-source
+
+# Docker desde pipelines
+docker-workflow
+
+# Credenciales
+credentials-binding
+plain-credentials
+ssh-credentials
+
+# Autorizacion y utilidades
+matrix-auth
+timestamper
+ws-cleanup
+build-timeout
+antisamy-markup-formatter

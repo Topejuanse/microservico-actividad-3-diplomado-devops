@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  # App-of-Apps: Argo CD lee las Application hijas desde el repo.
+  # Solo funciona una vez que la carpeta k3d/argocd/apps esta en la rama main.
+  # Mientras tanto, up.sh aplica esas Application directamente con kubectl.
+  source:
+    repoURL: https://github.com/Topejuanse/microservico-actividad-3-diplomado-devops.git
+    targetRevision: main
+    path: k3d/argocd/apps
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

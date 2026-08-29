@@ -1,0 +1,31 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: microservicios-devops
+
+servers: 1
+agents: 2
+
+# k3s ya incluye Traefik como Ingress Controller y servicelb (klipper) como
+# proveedor de LoadBalancer, por eso no hace falta habilitar nada extra.
+ports:
+  - port: "8080:80"
+    nodeFilters:
+      - loadbalancer
+  - port: "8443:443"
+    nodeFilters:
+      - loadbalancer
+
+options:
+  k3d:
+    wait: true
+    timeout: "120s"
+  k3s:
+    nodeLabels:
+      - label: ambiente=local
+        nodeFilters:
+          - server:*
+          - agent:*
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true

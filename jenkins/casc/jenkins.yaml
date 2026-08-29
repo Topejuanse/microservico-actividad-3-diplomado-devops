@@ -1,0 +1,59 @@
+jenkins:
+  systemMessage: "Jenkins local - microservicios diplomado DevOps (gestionado por JCasC)"
+  numExecutors: 2
+  mode: NORMAL
+  scmCheckoutRetryCount: 2
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "${JENKINS_ADMIN_ID:-admin}"
+          password: "${JENKINS_ADMIN_PASSWORD:-admin}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+security:
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: false
+
+unclassified:
+  location:
+    url: "http://localhost:${JENKINS_HTTP_PORT:-8080}/"
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              scope: GLOBAL
+              id: "dockerhub-team-credentials"
+              username: "${DOCKERHUB_USERNAME:-}"
+              password: "${DOCKERHUB_TOKEN:-}"
+              description: "Docker Hub - push de imagenes de los microservicios"
+          - usernamePassword:
+              scope: GLOBAL
+              id: "github-credentials"
+              username: "${GITHUB_USERNAME:-}"
+              password: "${GITHUB_TOKEN:-}"
+              description: "GitHub - push del bump de tags en helm-charts/"
+
+jobs:
+  - script: >
+      pipelineJob('microservicios-pipeline') {
+        description('Build + push de imagenes, bump de Helm values y push a GitHub (ver Jenkinsfile del repo).')
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url("${GIT_REPO_URL:-https://github.com/Topejuanse/microservico-actividad-3-diplomado-devops.git}")
+                }
+                branches("${GIT_BRANCH:-main}")
+              }
+            }
+            scriptPath('Jenkinsfile')
+            lightweight(true)
+          }
+        }
+      }

@@ -1,18 +1,16 @@
 pipeline {
     agent any
 
-    environment {
-
-        IMAGE_TAG = "1.0.${BUILD_NUMBER}"
-    }
-
-
     stages {
 
         stage('1. Checkout Code') {
             steps {
-
-                checkout scm
+                script {
+                    def scmVars = checkout scm
+                    env.GIT_SHA   = scmVars.GIT_COMMIT.take(7)
+                    env.IMAGE_TAG = "1.0.${BUILD_NUMBER}-${env.GIT_SHA}"
+                    echo "IMAGE_TAG = ${env.IMAGE_TAG}"
+                }
             }
         }
 
@@ -24,17 +22,18 @@ pipeline {
                         echo "Iniciando sesión en Docker Hub..."
                         sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
 
-                        echo "Construyendo y subiendo imagen para servicio-usuarios..."
-                        sh """
-                            docker build -t ${DOCKER_USER}/servicio-usuarios:${IMAGE_TAG} ./servicio-usuarios
-                            docker push ${DOCKER_USER}/servicio-usuarios:${IMAGE_TAG}
-                        """
+                        echo "Preparando buildx (QEMU + builder multi-arch)..."
+                        sh '''
+                            docker run --privileged --rm tonistiigi/binfmt --install all
+                            docker buildx create --name multiarch --driver docker-container --use || docker buildx use multiarch
+                            docker buildx inspect --bootstrap
+                        '''
 
-                        echo "Construyendo y subiendo imagen para servicio-pedidos..."
-                        sh """
-                        docker build -t ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG} ./servicio-pedidos
-                        docker push ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG}
-                        """
+                        echo "Construyendo y subiendo servicio-usuarios (linux/amd64 + linux/arm64)..."
+                        sh "docker buildx build --platform linux/amd64,linux/arm64 -t ${DOCKER_USER}/servicio-usuarios:${IMAGE_TAG} --push ./servicio-usuarios"
+
+                        echo "Construyendo y subiendo servicio-pedidos (linux/amd64 + linux/arm64)..."
+                        sh "docker buildx build --platform linux/amd64,linux/arm64 -t ${DOCKER_USER}/servicio-pedidos:${IMAGE_TAG} --push ./servicio-pedidos"
 
                     }
                 }
