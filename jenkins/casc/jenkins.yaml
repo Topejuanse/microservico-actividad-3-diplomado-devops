@@ -43,7 +43,7 @@ jobs:
       pipelineJob('microservicios-pipeline') {
         description('Build + push de imagenes, bump de Helm values y push a GitHub (ver Jenkinsfile del repo).')
         triggers {
-          scm('H/3 * * * *')
+          scm('* * * * *')
         }
         definition {
           cpsScm {

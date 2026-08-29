@@ -24,7 +24,7 @@ flowchart LR
     argo --> k8s
   end
 
-  gh -->|polling SCM ~3 min| jk
+  gh -->|polling SCM ~1 min| jk
   jk -->|"buildx multi-arch + docker push"| dh[("Docker Hub<br/>jfuquene/servicio-*")]
   jk -->|"bump tag en values.yaml<br/>commit [skip ci]"| gh
   gh -->|sync GitOps| argo
@@ -114,7 +114,7 @@ docker compose up -d --build  # 1er build ~2-4 min
 ```
 
 - UI: `http://localhost:${JENKINS_HTTP_PORT}` (por defecto 8080; el `.env` de ejemplo usa **8090** para no chocar con k3d)
-- Job `microservicios-pipeline` ya creado, con polling cada ~3 min
+- Job `microservicios-pipeline` ya creado, con polling cada ~1 min
 
 Detalle completo en **[jenkins/README.md](jenkins/README.md)**.
 
@@ -139,7 +139,7 @@ Detalle completo en **[k3d/README.md](k3d/README.md)**.
 ### 3. Probar el flujo end-to-end
 
 1. Haz un cambio en `servicio-usuarios/main.py` y push a `main`.
-2. En ≤3 min Jenkins arranca el job (causa *"Started by an SCM change"*).
+2. En ≤1 min Jenkins arranca el job (causa *"Started by an SCM change"*).
 3. Al terminar, `helm-charts/*/values.yaml` tiene un `tag` nuevo commiteado por `Jenkins Pipeline`.
 4. Argo CD sincroniza y hace rollout. Verifícalo:
    ```bash

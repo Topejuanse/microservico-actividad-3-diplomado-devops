@@ -18,10 +18,13 @@ RUN apt-get update \
 
 USER jenkins
 
+# Zona horaria GMT-5 (Colombia, sin horario de verano) para el SO y la JVM.
+ENV TZ=America/Bogota
+
 # Sin wizard: el admin y toda la config vienen de JCasC.
 # El YAML vive FUERA de /var/jenkins_home para que un rebuild siempre embarque
 # la version nueva (el volumen jenkins-home no la pisa).
-ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false -Duser.timezone=America/Bogota"
 ENV CASC_JENKINS_CONFIG=/var/jenkins_conf/jenkins.yaml
 
 COPY --chown=jenkins:jenkins casc/jenkins.yaml /var/jenkins_conf/jenkins.yaml

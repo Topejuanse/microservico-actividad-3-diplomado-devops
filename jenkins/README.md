@@ -41,7 +41,9 @@ docker compose up -d --build  # 1er build ~2-4 min (descarga de plugins)
   Son los mismos IDs que referencia el [Jenkinsfile](../Jenkinsfile), así que el
   pipeline funciona sin tocar nada más.
 - **Job** `microservicios-pipeline`: pipeline que lee el `Jenkinsfile` de
-  `GIT_REPO_URL` (rama `GIT_BRANCH`). Ejecútalo con **Build Now**.
+  `GIT_REPO_URL` (rama `GIT_BRANCH`). Ejecútalo con **Build Now** o deja que el
+  **polling SCM cada 1 min** (`scm('* * * * *')`) lo dispare ante cambios en `main`
+  fuera de `helm-charts/`.
 
 ## Operación
 
@@ -77,3 +79,8 @@ Code → Reload existing configuration*).
 - `useScriptSecurity: false` en el bloque `security` permite que JCasC cree el job
   vía Job DSL sin aprobación manual de script. Si prefieres el sandbox de Job DSL,
   quítalo y aprueba el script desde *Manage Jenkins → In-process Script Approval*.
+- **Zona horaria**: `TZ=America/Bogota` (GMT-5, sin DST) + `-Duser.timezone=America/Bogota`
+  en `JAVA_OPTS` (ver `Dockerfile`). Afecta timestamps de builds, el *Git Polling Log*
+  y la fecha de los commits que el pipeline hace en la etapa 4.
+- **Polling cada 1 min**: Jenkins avisará *"Do you really mean 'every minute'..."* en
+  la config del job; es esperado, no un error.
