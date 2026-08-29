@@ -1,4 +1,4 @@
-# Microservicios + CI/CD con GitOps — Diplomado DevOps (Actividad 3)
+# Microservicios + CI/CD con GitOps — Diplomado DevOps
 
 Dos microservicios en FastAPI con un flujo completo de **integración y despliegue continuos**:
 Jenkins construye y publica las imágenes, versiona los charts de Helm en Git, y **Argo CD**
